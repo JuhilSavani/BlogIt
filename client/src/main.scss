@@ -1,5 +1,5 @@
 // SCSS Variables
-$primary-white: #D2EBA7;
+$primary-white: #FFF8E3;
 $primary-black: #222831;
 $primary-gold: #FFC436;
 
@@ -41,16 +41,12 @@ $font-xxl: 2.5rem;
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-color: var(--bg-dark);
-    --txt-color: var(--txt-dark);
     color-scheme: dark;
   }
 }
 
 @media (prefers-color-scheme: light) {
   :root {
-    --bg-color: var(--bg-light);
-    --txt-color: var(--txt-light);
     color-scheme: light;
   }
 }
@@ -58,13 +54,11 @@ $font-xxl: 2.5rem;
 :root[color-scheme="dark"] {
   --bg-color: var(--bg-dark);
   --txt-color: var(--txt-dark);
-  color-scheme: dark;
 }
 
 :root[color-scheme="light"] {
   --bg-color: var(--bg-light);
   --txt-color: var(--txt-light);
-  color-scheme: light;
 }
 
 body {
@@ -72,7 +66,7 @@ body {
   padding-top: calc(80px + 0.75rem);
   background-color: var(--bg-color); 
   color: var(--txt-color); 
-  transition: 0.5s ease;
+  transition: 0.25s ease;
 }
 
 a { 
@@ -101,7 +95,7 @@ header {
   border-radius: 10px;
   margin: 0.75rem;
   border: 1.5px solid var(--txt-color);
-  transition: color 0.5s ease, background-color 0.5s ease;
+  transition: color 0.25s ease, background-color 0.25s ease;
 }
 
 header nav {

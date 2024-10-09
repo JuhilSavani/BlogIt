@@ -4,7 +4,7 @@ import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState("light");
+  const [theme, setTheme] = useState("dark");
 
   const handleScroll = () => {
     const offset = window.scrollY;
