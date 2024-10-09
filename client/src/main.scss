@@ -77,7 +77,8 @@ a {
 .page {
   display: grid;
   place-content: center;
-  min-height: calc(101vh - 0.75rem - 80px);
+  min-height: calc(100vh - 0.75rem - 80px);
+  padding: 2.5rem 15vw 5rem 15vw;
 }
 
 // Header styles
@@ -150,3 +151,20 @@ header.scrolled {
     background-color: var(--bg-color);
   }
 }
+
+// ABOUT ~~~~~~~ 
+.about .container{
+  h1, h2{
+    width: 40%;
+    display: inline-block;
+    margin: 0.5rem 0;
+    border-bottom: 2px solid var(--txt-color);
+  }
+  p{
+    font-size: $font-md;
+    margin: 0.75rem 0;
+    text-align: justify;
+  }
+}
+
+// HOME ~~~~~~~ 

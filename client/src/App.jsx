@@ -2,6 +2,7 @@ import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route, O
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import About from './pages/About';
+import Create from './pages/Create';
 
 // Define a layout component 
 const Layout = () => {
@@ -19,6 +20,7 @@ const routes = createRoutesFromElements(
   <Route path="/" element={<Layout />}>
     <Route index element={<Home />} />
     <Route path="about" element={<About />} />
+    <Route path="create" element={<Create />} />
   </Route>
 );
 
