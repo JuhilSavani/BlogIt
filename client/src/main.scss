@@ -54,11 +54,13 @@ $font-xxl: 2.5rem;
 :root[color-scheme="dark"] {
   --bg-color: var(--bg-dark);
   --txt-color: var(--txt-dark);
+  --txt-editor-shadow: rgb(0, 0, 0, 1);
 }
 
 :root[color-scheme="light"] {
   --bg-color: var(--bg-light);
   --txt-color: var(--txt-light);
+  --txt-editor-shadow: rgb(255, 255, 255, 0.5);
 }
 
 body {
@@ -81,7 +83,7 @@ a {
   padding: 2.5rem 15vw 5rem 15vw;
 }
 
-// Header styles
+// Header ~~~~~~~
 header {
   position: fixed;
   top: 0;
@@ -95,6 +97,7 @@ header {
   color: var(--txt-color); 
   border-radius: 10px;
   margin: 0.75rem;
+  z-index: 1;
   border: 1.5px solid var(--txt-color);
   transition: color 0.25s ease, background-color 0.25s ease;
 }
@@ -167,4 +170,79 @@ header.scrolled {
   }
 }
 
-// HOME ~~~~~~~ 
+// CREATE ~~~~~~~ 
+.create form{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 80vw;
+  padding: 2rem;
+  border-radius: 5px;
+  color: var(--bg-color);
+  background-color: var(--txt-color);
+}
+
+.create form input, .post-btn{
+  background-color: var(--bg-color);
+  color: var(--txt-color);
+  border: none;
+  border-radius: 5px;
+  font-size: $font-sm;
+  &:hover, &:focus{
+    outline: none;
+  }
+  &::placeholder{
+    font-weight: normal;
+    font-size: 1.05rem;
+    color: var(--txt-color);
+  }
+}
+
+.create form #title, #slug{
+  width: 65%;
+  margin: 1rem 0;
+  padding: 0.75rem;
+  display: block;
+}
+
+.create form .taglist{
+  font-size: 1.05rem;
+  margin-left: 0.75rem;
+  margin-right: 1rem;
+  padding: 0.5rem 0.5rem;
+}
+
+.create form label {
+  font-size: $font-lg;
+}
+
+.create form .post-btn{
+  padding: 0.5rem 1rem;
+  transition: 0.5s ease;
+  margin: 0 1rem;
+  border: 2px solid var(--bg-color);
+  &:hover{
+    background-color: var(--txt-color);
+    color: var(--bg-color);
+  }
+}
+
+// CREATE/toastui-editor ~~~~~~~
+.toastui-editor-defaultUI{
+  box-shadow: 0 0 10px var(--txt-editor-shadow);
+}
+
+.toastui-editor-dark{ 
+  .toastui-editor-md-container, .toastui-editor-ww-container{
+    background-color: #121212;
+  }
+  // .toastui-editor-contents {}
+}
+
+.toastui-editor-toolbar-group{
+  .indent, .outdent, .table, .image, .codeblock{
+    display: none;
+  }
+}
+
+
