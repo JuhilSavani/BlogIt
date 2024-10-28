@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
-import env from "dotenv";
+import { connectMongo } from "./config/db.config";
 
 const PORT = process.env.PORT || 4000;
 const app = express();
-env.config();
+
+connectMongo();
 
 // Middleware
 app.use(express.json());
@@ -18,7 +19,7 @@ app.use(
 );
 
 app.get("/", (req, res) => {
-  return res.json({"msg": "Ok"});
+  return res.json({"msg": "200: Ok"});
 });
 
 app.listen(PORT, () => {
