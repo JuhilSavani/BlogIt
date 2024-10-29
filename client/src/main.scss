@@ -3,8 +3,8 @@
   --primary-black: #222831;
   --primary-gold: #FFC436;
 
-  --font-sm: 1.25rem;
-  --font-md: 1.35rem;    
+  --font-sm: 1.05rem;
+  --font-md: 1.25rem;    
   --font-lg: 1.5rem; 
   --font-xl: 2rem;
   --font-xxl: 2.5rem;
@@ -89,10 +89,11 @@ header {
   padding: 0rem 2rem;
   background-color: var(--bg-color); 
   color: var(--txt-color); 
-  border-radius: 10px;
+  border-radius: 5px;
   margin: 0.75rem;
   z-index: 1;
-  border: 1.5px solid var(--txt-color);
+  // border: 1.5px solid var(--txt-color);
+  box-shadow: 0px 0px 2.5px 2.5px rgba(16, 16, 16, 0.25);
   transition: color 0.25s ease, background-color 0.25s ease;
 }
 
@@ -182,13 +183,15 @@ header.scrolled {
   border: none;
   border-radius: 5px;
   font-size: var(--font-sm);
-  &:hover, &:focus{
+  &:focus{
     outline: none;
+    box-shadow: inset 0 0 0 3px var(--primary-gold);
   }
   &::placeholder{
     font-weight: normal;
-    font-size: 1.05rem;
+    font-size: var(--font-sm);
     color: var(--txt-color);
+    opacity: 0.8;
   }
 }
 
@@ -244,3 +247,65 @@ header.scrolled {
 }
 
 
+.sign-in .container,
+.sign-up .container{
+  width: 450px;
+  background-color: var(--txt-color);
+  color: var(--bg-color);
+  font-size: var(--font-sm);
+  padding: 1.5rem 2rem;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: inset 0 0 5px 5px rgba(16, 16, 16, 0.5);
+}
+
+.sign-in .container form,
+.sign-up .container form{
+  width: 100%;
+  margin: 1rem 0;
+  >* {
+    display: block;
+  }
+  input{
+    width: 100%;
+    padding: 0.75rem 1rem;
+    margin-top: 0.25rem;
+    margin-bottom: 1rem;
+    color: var(--txt-color);
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 5px;
+    font-size: var(--font-sm);
+    &:focus{
+      outline: none;
+      box-shadow: inset 0 0 0 3px var(--primary-gold);
+    }
+    &::placeholder{
+      font-weight: normal;
+      font-size: var(--font-sm);
+      color: var(--txt-color);
+      opacity: 0.8;
+    }
+  }
+  span{
+    text-align: center;
+    margin: 1rem 0 0.5rem 0;
+  }
+  button{
+    background-color: var(--bg-color);
+    color: var(--txt-color);
+    border-radius: 5px;
+    font-size: var(--font-md);
+    padding: 0.5rem 1rem;
+    margin: 0 auto;
+    border: 2px solid var(--bg-color);
+    transition: 0.25s ease;
+    &:hover{
+      background-color: var(--txt-color);
+      color: var(--bg-color);
+    }
+  }
+}
