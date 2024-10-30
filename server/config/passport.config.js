@@ -1,6 +1,10 @@
+import { configDotenv } from "dotenv";
 import passport from "passport";
 import passportJWT from "passport-jwt";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
+
+// Load environmental variables
+configDotenv();
 
 const JwtStrategy = passportJWT.Strategy;
 const ExtractJwt = passportJWT.ExtractJwt;
@@ -12,14 +16,14 @@ const jwtOptions = {
 
 passport.use(
   new JwtStrategy(jwtOptions, async (jwtPayload, callback) => {
-    try{
-      const user = await User.findById(jwtPayload.sub);
-      if(user){
+    try {
+      const user = await User.findById(jwtPayload.sub).select("_id username");
+      if (user) {
         callback(null, user);
-      }else{
+      } else {
         callback(null, false);
       }
-    }catch(error){
+    } catch (error) {
       callback(error, false);
     }
   })
