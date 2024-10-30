@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
+import useAuth from "../utils/hooks/useAuth";
 
 function Home() {
+  const { auth } = useAuth();
+
   return (
     <div className="page home">
       <div className="container">
@@ -11,12 +14,14 @@ function Home() {
           Your personal space for microblogging—quickly share moments and ideas!
         </p>
         <div>
-          <button>
-            <Link to="/sign-up">Register</Link>
-          </button>
-          <button>
-            <Link to="/sign-in">Login</Link>
-          </button>
+          {auth?.accessToken ? (
+            <Link to="/create">Create a Post</Link>
+          ) : (
+            <>
+              <Link to="/sign-up">Register</Link>
+              <Link to="/sign-in">Login</Link>
+            </>
+          )}
         </div>
       </div>
     </div>
