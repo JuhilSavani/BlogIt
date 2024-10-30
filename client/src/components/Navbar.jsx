@@ -1,8 +1,9 @@
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { SunIcon, MoonIcon } from "@heroicons/react/24/solid";
+import useAuth from "../utils/hooks/useAuth";
 
 const Navbar = () => {
+  const { auth } = useAuth();
   const [scrolled, setScrolled] = useState(false);
   const [theme, setTheme] = useState("dark");
 
@@ -23,7 +24,7 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    document.documentElement.setAttribute('color-scheme', theme);
+    document.documentElement.setAttribute("color-scheme", theme);
   }, [theme]);
 
   return (
@@ -44,16 +45,21 @@ const Navbar = () => {
           <li>
             <NavLink to="/create">Create</NavLink>
           </li>
+          {auth?.accessToken && (
+            <li>
+              <NavLink to={`/dashboard/${auth?.username}`}>Dashboard</NavLink>
+            </li>
+          )}
         </ul>
       </nav>
       <div>
         {theme === "dark" ? (
           <button onClick={() => setTheme("light")}>
-            <SunIcon style={{height: "30px"}}/>
+            <i className='bx bxs-sun' style={{fontSize: "1.75rem"}}></i>
           </button>
         ) : (
           <button onClick={() => setTheme("dark")}>
-            <MoonIcon style={{height: "24px"}}/>
+            <i className='bx bxs-moon'></i>
           </button>
         )}
       </div>
