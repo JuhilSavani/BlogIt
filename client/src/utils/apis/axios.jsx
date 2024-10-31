@@ -2,8 +2,8 @@
 import axios from "axios";
 
 const BASE_URL = `${
-  import.meta.env.NODE_ENV === "production"
-    ? import.meta.env.BASE_URL
+  import.meta.env.VITE_NODE_ENV === "production"
+    ? import.meta.env.VITE_BASE_URL
     : "http://localhost:4000"
 }/api/v1`;
 
