@@ -1,5 +1,3 @@
-import React from "react";
-
 const About = () => {
   return (
     <div className="page about">
@@ -12,8 +10,13 @@ const About = () => {
 
         <p>
           <strong>BlogIt</strong> is a simple and easy-to-use platform where you
-          can write and share your thoughts, ideas, or everyday moments. Unlike
-          bigger blogging or social media platforms, this one is all about you.
+          can write and share your thoughts, ideas, or everyday moments.
+          It&apos;s your own personal corner of the internet to share quick
+          updates, stay connected with family and friends, or just enjoy writing
+          for yourself
+        </p>
+
+        <p>
           No distractions, no extra noise—just a cozy place for your own blogs!
         </p>
 
@@ -28,17 +31,9 @@ const About = () => {
           update, or something cool you found online.
         </p>
 
-        <h2>Why Choose BlogIt?</h2>
         <p>
-          Because it&apos;s built just for you! There&apos;s no need to compete
-          for attention here—it&apos;s your own personal corner of the internet.
-          Share quick updates, stay connected with family and friends, or just
-          enjoy writing for yourself.
-        </p>
-
-        <p>
-          Ready to start blogging? Blog with <strong>BlogIt</strong> today, because{" "}
-          <em>&quot;Each post is a canvas for your voice!&quot;</em>
+          Ready to start blogging? Blog with <strong>BlogIt</strong> today,
+          because <em>&quot;Each post is a canvas for your voice!&quot;</em>
         </p>
 
         <p>Thanks for visiting, and happy blogging!</p>
