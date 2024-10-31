@@ -557,6 +557,7 @@ header.scrolled {
 // SLIDER ~~~~~~~
 #outlet{
   position: relative;
+  overflow: hidden;
 }
 
 .slider {
