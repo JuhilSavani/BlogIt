@@ -17,7 +17,10 @@ connectMongo();
 // Middlewares
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin:
+      process.env.NODE_ENV === "production"
+        ? process.env.ALLOWED_ORIGIN
+        : "http://localhost:3000",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true, // Allows the server to send, accept and edit credentials like httpOnly cookies.
