@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { User } from "../models/user.model";
+import { User } from "../models/user.model.js";
 
 export const login = async (req, res) => {
   const { username, password } = req.body;
@@ -14,27 +14,28 @@ export const login = async (req, res) => {
     const user = await User.findOne({ username });
     if (user && bcrypt.compareSync(password, user.password)) {
       const refreshToken = jwt.sign(
-        { sub: user._id },
+        { sub: user._id, username },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: "1h" }
       );
 
       const accessToken = jwt.sign(
-        { sub: user._id },
+        { sub: user._id, username },
         process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: "15m" }
       );
 
-      res.cookie("refresh-token", refreshToken, {
+      res.cookie("x-blogit-refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "Lax",
         maxAge: 3600000, // in milliseconds
       });
 
-      return res.status(200).json({ accessToken });
+      return res.status(200).json({ accessToken, username });
     } else {
-      return res.status(401).json({ message: "Invalid credentials" });
+      if(!user) return res.status(404).json({ message: "User not found" });
+      return res.status(401).json({ message: "Invalid password" });
     }
   } catch (error) {
     console.error(error.stack);
@@ -45,21 +46,47 @@ export const login = async (req, res) => {
 export const register = async (req, res) => {
   const { username, email, password } = req.body;
 
-  if (!username || !password || !email) {
+  if (!username || !password || !email)
     return res.status(400).json({
       message: "Please provide username, password, and email to proceed.",
     });
-  }
 
   try {
     const existingUser = await User.findOne({ username }).select("_id");
     if (existingUser)
       return res.status(409).json({ message: "User already exists." });
 
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    await User.create({ username, email, password: hashedPassword });
+    const existingEmail = await User.findOne({ email }).select("_id");
+    if (existingEmail)
+      return res.status(409).json({ message: "Email already exists." });
 
-    return res.status(201).json({ message: "User registered successfully!" });
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+    });
+
+    const refreshToken = jwt.sign(
+      { sub: newUser._id, username },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    const accessToken = jwt.sign(
+      { sub: newUser._id, username },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.cookie("x-blogit-refresh-token", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Lax",
+      maxAge: 3600000, // in milliseconds
+    });
+
+    return res.status(200).json({ accessToken, username });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error." });
@@ -67,7 +94,8 @@ export const register = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("refresh-token", {
+  if (!req.cookies?.["x-blogit-refresh-token"]) return res.sendStatus(204);
+  res.clearCookie("x-blogit-refresh-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
   });
@@ -75,16 +103,19 @@ export const logout = (req, res) => {
 };
 
 export const refresh = (req, res) => {
-  const refreshToken = req.cookies["refresh-token"];
+  const refreshToken = req.cookies["x-blogit-refresh-token"];
   if (!refreshToken) return res.sendStatus(401); // Unauthorized if no refresh token
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
     if (err) return res.sendStatus(403); // Forbidden if refresh token is invalid
+
+    req.user = { _id: user.sub, username: user.username };
+
     const accessToken = jwt.sign(
-      { sub: user.sub },
+      { sub: user.sub, username: user.username },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
-    return res.status(200).json({ accessToken });
+    return res.status(200).json({ accessToken, username: user.username  });
   });
 };
