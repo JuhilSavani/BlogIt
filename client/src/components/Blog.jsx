@@ -12,7 +12,7 @@ const Blog = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [blog, setBlog] = useState([]);
   const [error, setError] = useState({});
-  
+
   const notify = useNotify();
   const date = useDate();
   const { auth } = useAuth();
@@ -31,7 +31,7 @@ const Blog = () => {
           { withCredentials: true }
         );
         setBlog(response.data);
-        if(!response.data) setError("Blog ID is not valid");
+        if (!response.data) setError("Blog ID is not valid");
       } catch (err) {
         setError(err?.response?.data ? err.response.data.message : err.message);
         navigate(-1, { replace: true });
@@ -42,21 +42,16 @@ const Blog = () => {
     fetchBlog();
   }, [axiosProtected, id, navigate]);
 
-  useEffect(()=>{
-    if(error){
-      notify("error", error);
-      setError("");
-    }
-  }, [error, notify]);
-
   const handleDelete = async () => {
-    try{
+    try {
       await axiosProtected.delete(`/protected/delete/blog/${id}`, {
-        withCredentials: true
+        withCredentials: true,
       });
-      navigate(-1, { replace: true });
-    }catch(err){
+      notify("success", "Blog removed successfully!");
+      navigate(`/dashboard/${blog.author}`, { replace: true });
+    } catch (err) {
       setError(err?.response?.data ? err.response.data.message : err.message);
+      navigate(-1, { replace: true });
     }
   };
 
@@ -64,6 +59,13 @@ const Blog = () => {
     const blogId = location.pathname.split("/")[2];
     navigate(`/edit/${blogId}`);
   };
+
+  useEffect(() => {
+    if (error) {
+      notify("error", error);
+      setError("");
+    }
+  }, [error, notify]);
 
   return (
     <>
@@ -87,7 +89,7 @@ const Blog = () => {
                   <i className="bx bxs-edit-alt"></i>
                 </button>
                 <button className="delete-btn" onClick={handleDelete}>
-                  <i className='bx bxs-trash'></i>
+                  <i className="bx bxs-trash"></i>
                 </button>
               </div>
             ) : (
@@ -95,7 +97,9 @@ const Blog = () => {
             )}
           </div>
         </div>
-      ) : (<NotFound/>)}
+      ) : (
+        <NotFound />
+      )}
     </>
   );
 };

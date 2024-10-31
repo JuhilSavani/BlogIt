@@ -1,18 +1,22 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import { Editor } from "@toast-ui/react-editor";
 import useAxiosProtected from "../utils/hooks/useAxiosProtected";
 import useAuth from "../utils/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import useNotify from "../utils/hooks/useNotify";
 
 const Create = () => {
   const editorRef = useRef();
   const { auth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
   const axiosProtected = useAxiosProtected();
   const navigate = useNavigate();
+  const notify = useNotify();
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -27,14 +31,22 @@ const Create = () => {
       await axiosProtected.post("/protected/publish/blog", data, {
         withCredentials: true,
       });
+      notify("success", "Blog published successfully! 🎉");
+      navigate(`/dashboard/${auth.username}`);
     } catch (err) {
-      setError(err.response ? err.response.data : err.message);
-      console.log("Error: ", error);
+      setError(err?.response?.data ? err.response.data.message : err.message);
+      navigate(-1, { replace: true });
     } finally {
       setIsLoading(false);
-      navigate(`/dashboard/${auth.username}`);
     }
   };
+
+  useEffect(()=>{
+    if(error){
+      notify("error", error);
+      setError("");
+    }
+  }, [error, notify]);
 
   return (
     <div className="page create">

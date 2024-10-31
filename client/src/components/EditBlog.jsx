@@ -33,9 +33,10 @@ const EditBlog = () => {
       await axiosProtected.put(`/protected/edit/blog/${id}`, editedData, {
         withCredentials: true,
       });
+      notify("success", "Blog updated successfully! 🎉");
       navigate(`/dashboard/${blog.author}`, { replace: true });
     } catch (err) {
-      setBlog(err.response ? err.response.data : err.message);
+      setError(err?.response?.data ? err.response.data.message : err.message);
       navigate(-1, { replace: true });
     }
   };
