@@ -21,6 +21,7 @@ import Blog from "./components/Blog";
 import EditBlog from "./components/EditBlog";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Slider from "./components/Slider";
 
 // Define a layout component
 const Layout = () => {
@@ -33,19 +34,22 @@ const Layout = () => {
   return (
     <>
       {showNavbar && <Navbar />}
-      <Outlet />
-      <ToastContainer
-        position="top-right"
-        autoClose={2000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="colored"
-      />
+      <div id="outlet">
+        <Outlet />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+        <Slider/>
+      </div>
     </>
   );
 };
