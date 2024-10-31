@@ -28,13 +28,13 @@ export const login = async (req, res) => {
       res.cookie("x-blogit-refresh-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "Lax",
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
         maxAge: 3600000, // in milliseconds
       });
 
       return res.status(200).json({ accessToken, username });
     } else {
-      if(!user) return res.status(404).json({ message: "User not found" });
+      if (!user) return res.status(404).json({ message: "User not found" });
       return res.status(401).json({ message: "Invalid password" });
     }
   } catch (error) {
@@ -82,7 +82,7 @@ export const register = async (req, res) => {
     res.cookie("x-blogit-refresh-token", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "Lax",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
       maxAge: 3600000, // in milliseconds
     });
 
@@ -98,6 +98,7 @@ export const logout = (req, res) => {
   res.clearCookie("x-blogit-refresh-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
   return res.status(200).json({ message: "Logged out successfully" });
 };
@@ -116,6 +117,7 @@ export const refresh = (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "15m" }
     );
-    return res.status(200).json({ accessToken, username: user.username  });
+    return res.status(200).json({ accessToken, username: user.username });
   });
 };
+
