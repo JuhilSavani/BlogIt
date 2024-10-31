@@ -13,9 +13,9 @@ const ProtectedLoader = () => {
     const getRefresh = async () => {
       try {
         const response = await refresh();
-        setAuth(response.data);
+        setAuth(response?.data);
       } catch (err) {
-        console.log("Error: ", err.stack);
+        console.log("Error: ", err.message);
       } finally {
         setLoading(false);
       }
