@@ -5,7 +5,7 @@ function useLogout() {
   const { setAuth } = useAuth();
   return async () => {
     try {
-      await axios.get("/auth/logout", { withCredentials: true });
+      await axios.post("/auth/logout", null, { withCredentials: true });
       setAuth({});
     } catch (err) {
       console.log("Error: ", err.message);

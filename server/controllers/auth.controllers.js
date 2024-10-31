@@ -25,7 +25,7 @@ export const login = async (req, res) => {
         { expiresIn: "15m" }
       );
 
-      res.cookie("x-blogit-refresh-token", refreshToken, {
+      res.cookie("x-blogit-token", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
@@ -79,7 +79,7 @@ export const register = async (req, res) => {
       { expiresIn: "15m" }
     );
 
-    res.cookie("x-blogit-refresh-token", refreshToken, {
+    res.cookie("x-blogit-token", refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
@@ -94,17 +94,22 @@ export const register = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  if (!req.cookies?.["x-blogit-refresh-token"]) return res.sendStatus(204);
-  res.clearCookie("x-blogit-refresh-token", {
+  console.log("Logout initiated.");
+  if (!req.cookies?.["x-blogit-token"]) {
+    console.log("No cookie found, user is already logged out.");
+    return res.sendStatus(204); // No Content
+  }
+  res.clearCookie("x-blogit-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
+  console.log("Cookie cleared, user logged out successfully.");
   return res.status(200).json({ message: "Logged out successfully" });
 };
 
 export const refresh = (req, res) => {
-  const refreshToken = req.cookies["x-blogit-refresh-token"];
+  const refreshToken = req.cookies["x-blogit-token"];
   if (!refreshToken) return res.sendStatus(401); // Unauthorized if no refresh token
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
