@@ -5,7 +5,7 @@ import {
   Route,
   Outlet,
   useLocation,
-  matchPath
+  matchPath,
 } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -18,24 +18,34 @@ import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./utils/ProtectedRoute";
 import ProtectedLoader from "./utils/ProtectedLoader";
 import Blog from "./components/Blog";
+import EditBlog from "./components/EditBlog";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Define a layout component
 const Layout = () => {
   const location = useLocation();
-  const navbarRoutes = [
-    "/",
-    "/about",
-    "/sign-in",
-    "/sign-up",
-    "/create"
-  ];
+  const navbarRoutes = ["/", "/about", "/sign-in", "/sign-up", "/create"];
   const isDashboardRoute = matchPath("/dashboard/:username", location.pathname);
 
-  const showNavbar = navbarRoutes.includes(location.pathname) || isDashboardRoute;
+  const showNavbar =
+    navbarRoutes.includes(location.pathname) || isDashboardRoute;
   return (
     <>
       {showNavbar && <Navbar />}
       <Outlet />
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
     </>
   );
 };
@@ -55,6 +65,7 @@ const routes = createRoutesFromElements(
         <Route path="create" element={<Create />} />
         <Route path="dashboard/:username" element={<Dashboard />} />
         <Route path="blog/:id" element={<Blog />} />
+        <Route path="edit/:id" element={<EditBlog />} />
       </Route>
 
       {/* Catch all */}
