@@ -23,7 +23,7 @@ BlogIt is a web application that allows users to create, read, and manage blog p
 
 ## Technologies
 
-- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js, 
+- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js 
 - **Backend:** Node.js, Express, Passport.js (JWT-based authentication)
 - **Database:** MongoDB (using Mongoose)
 - **Styling:** SCSS (custom styles and transitions)
@@ -98,6 +98,8 @@ To set up BlogIt locally, follow these steps:
 
 ## Contributing
 Contributions are welcome! If you have suggestions or improvements, please fork the repository and create a pull request.
+
+**Happy coding! :rocket:**
 
 ---
 
