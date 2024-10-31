@@ -11,13 +11,14 @@ const blogSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  tags: {
-    type: [String],
+  tag: {
+    type: String,
+    required: true,
   },
   author: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
+    index: true,
   },
   createdAt: {
     type: Date,
