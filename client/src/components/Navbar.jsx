@@ -1,11 +1,12 @@
 import { Link, NavLink } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useAuth from "../utils/hooks/useAuth";
+import ThemeContext from "../utils/contexts/ThemeProvider";
 
 const Navbar = () => {
   const { auth } = useAuth();
   const [scrolled, setScrolled] = useState(false);
-  const [theme, setTheme] = useState("dark");
+  const { theme, setTheme } = useContext(ThemeContext);
 
   const handleScroll = () => {
     const offset = window.scrollY;
