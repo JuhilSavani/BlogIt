@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import { Editor } from "@toast-ui/react-editor";
 import useAxiosProtected from "../utils/hooks/useAxiosProtected";
-import { useNavigate, useParams } from "react-router-dom";
-import Loading from "./Loading";
 import useNotify from "../utils/hooks/useNotify";
+import Loading from "../components/Loading";
+import NotFound from "../pages/NotFound";
 
 const EditBlog = () => {
   const [blog, setBlog] = useState({});
@@ -48,7 +49,7 @@ const EditBlog = () => {
           { withCredentials: true }
         );
         setBlog(response.data);
-        if(!response.data.length) setError("Blog ID is not valid");
+        if(!response.data) setError("Blog ID is not valid");
       } catch (err) {
         setError(err?.response?.data ? err.response.data.message : err.message);
         navigate(-1, { replace: true });
@@ -70,7 +71,7 @@ const EditBlog = () => {
     <>
       {isLoading ? (
         <Loading />
-      ) : (
+      ) : blog ? (
         <div className="page edit-blog">
           <div className="container">
             <h2>&ldquo;{blog.title}&rdquo;</h2>
@@ -122,7 +123,7 @@ const EditBlog = () => {
             </form>
           </div>
         </div>
-      )}
+      ) : (<NotFound/>)}
     </>
   );
 };

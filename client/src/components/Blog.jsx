@@ -4,9 +4,9 @@ import ReactMarkdown from "react-markdown";
 import useAuth from "../utils/hooks/useAuth";
 import useDate from "../utils/hooks/useDate";
 import useAxiosProtected from "../utils/hooks/useAxiosProtected";
+import useNotify from "../utils/hooks/useNotify";
 import Loading from "../components/Loading";
 import NotFound from "../pages/NotFound";
-import useNotify from "../utils/hooks/useNotify";
 
 const Blog = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ const Blog = () => {
           { withCredentials: true }
         );
         setBlog(response.data);
-        if(!response.data.length) setError("Blog ID is not valid");
+        if(!response.data) setError("Blog ID is not valid");
       } catch (err) {
         setError(err?.response?.data ? err.response.data.message : err.message);
         navigate(-1, { replace: true });
@@ -69,7 +69,7 @@ const Blog = () => {
     <>
       {isLoading ? (
         <Loading />
-      ) : blog.length ? (
+      ) : blog ? (
         <div className="page blog-page">
           <div className="container">
             <h1 className="title">{blog.title}</h1>
