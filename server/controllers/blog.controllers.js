@@ -33,7 +33,6 @@ export const retreiveOne = async (req, res) => {
 // Publish Blog
 export const publish = async (req, res) => {
   const { title, content, tag } = req.body;
-  console.log(req.user);
   if (!title || !content || !tag)
     return res.status(400).json({
       message: "Please provide full details to publish the blog.",

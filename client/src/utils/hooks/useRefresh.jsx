@@ -8,7 +8,7 @@ const useRefresh = () => {
       });
       return response;
     } catch (err) {
-      console.log("Error: ", err.stack);
+      console.log("Error: ", err.message);
     }
   };
 };

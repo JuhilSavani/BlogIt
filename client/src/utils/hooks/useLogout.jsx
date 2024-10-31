@@ -7,8 +7,8 @@ function useLogout() {
     try {
       await axios.get("/auth/logout", { withCredentials: true });
       setAuth({});
-    } catch (error) {
-      console.log(error.stack);
+    } catch (err) {
+      console.log("Error: ", err.message);
     }
   };
 }

@@ -27,7 +27,6 @@ const useAxiosProtected = () => {
           prevReq._retry = true;
           const response = await refresh();
           if (response?.data) {
-            console.log(response.data);
             setAuth(response.data);
             prevReq.headers.Authorization = `Bearer ${response.data?.accessToken}`;
             return axiosProtected(prevReq);
