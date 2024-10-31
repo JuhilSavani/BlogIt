@@ -2,49 +2,51 @@ import React, { useRef, useState } from "react";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import { Editor } from "@toast-ui/react-editor";
+import useAxiosProtected from "../utils/hooks/useAxiosProtected";
+import useAuth from "../utils/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const Create = () => {
   const editorRef = useRef();
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
+  const { auth } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const axiosProtected = useAxiosProtected();
+  const navigate = useNavigate();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-  const handleTitleChange = (e) => {
-    const newTitle = e.target.value;
-    setTitle(newTitle);
-    setSlug(generateSlug(newTitle));
-  };
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
 
-  const generateSlug = (text) => {
-    return text
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9 -]/g, "") // Remove invalid characters
-      .replace(/\s+/g, "-") // Replace spaces with dashes
-      .replace(/--+/g, "-") // Replace multiple dashes with a single dash
-      .slice(0, 100); // Limit slug length (optional)
+    const editorContent = editorRef.current.getInstance().getMarkdown();
+    data.content = editorContent;
+
+    try {
+      await axiosProtected.post("/protected/publish/blog", data, {
+        withCredentials: true,
+      });
+    } catch (err) {
+      setError(err.response ? err.response.data : err.message);
+      console.log("Error: ", error);
+    } finally {
+      setIsLoading(false);
+      navigate(`/dashboard/${auth.username}`);
+    }
   };
 
   return (
     <div className="page create">
       <div className="container">
-        <form action="">
+        <form onSubmit={handleSubmit}>
           <div>
             <input
               type="text"
               name="title"
               id="title"
               placeholder="Title"
-              value={title}
-              onChange={handleTitleChange} // Update title and slug on change
               required
-            />
-            <input
-              type="text"
-              name="slug"
-              id="slug"
-              placeholder="Slug"
-              value={slug}
-              disabled // Slug field is disabled
             />
           </div>
           <div className="rich-text-editor">
@@ -59,8 +61,13 @@ const Create = () => {
           </div>
           <div>
             <label>
-              On:
-              <input className="taglist" list="tag" name="tag" placeholder="Tag" required />
+              <input
+                className="taglist"
+                list="tag"
+                name="tag"
+                placeholder="Tag"
+                required
+              />
             </label>
             <datalist id="tag">
               <option value="Personal">Personal</option>
@@ -76,7 +83,9 @@ const Create = () => {
               <option value="Finance">Finance</option>
               <option value="Political">Political</option>
             </datalist>
-            <button type="submit" className="post-btn">Post</button>
+            <button type="submit" className="post-btn">
+              {isLoading ? "Loading" : "Publish"}
+            </button>
           </div>
         </form>
       </div>
