@@ -34,7 +34,9 @@ const Slider = () => {
     }
   }, [error, notify]);
 
-  return auth ? (
+  if (!auth) return null;
+
+  return (
     <div className={`slider ${isOpen ? "open" : ""}`} onClick={toggleSlider}>
       <button className="slider-btn">
         <i className="bx bxs-left-arrow"></i>
@@ -47,8 +49,6 @@ const Slider = () => {
         </li>
       </ul>
     </div>
-  ) : (
-    <></>
   );
 };
 
