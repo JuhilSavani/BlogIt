@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import React from "react";
 import { Link } from "react-router-dom";
 import useDate from "../utils/hooks/useDate";
 import ReactMarkdown from 'react-markdown';
+import PropTypes from 'prop-types';
 
 const BlogList = ({ blogs }) => {
   const date = useDate();
@@ -24,6 +24,19 @@ const BlogList = ({ blogs }) => {
       ))}
     </>
   );
+};
+
+BlogList.propTypes = {
+  blogs: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      content: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired,
+      createdAt: PropTypes.string.isRequired,
+      tag: PropTypes.string,
+    })
+  ).isRequired,
 };
 
 export default BlogList;

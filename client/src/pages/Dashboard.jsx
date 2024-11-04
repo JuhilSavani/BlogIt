@@ -1,66 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Loading from "../components/Loading";
 import BlogList from "../components/BlogList";
 import { useNavigate, useParams } from "react-router-dom";
 import useAxiosProtected from "../utils/hooks/useAxiosProtected";
 import useNotify from "../utils/hooks/useNotify";
+import { useQuery } from "@tanstack/react-query";
 
 const Dashboard = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [blogs, setBlogs] = useState([]);
-  const [error, setError] = useState({});
-
   const { username } = useParams();
   const navigate = useNavigate();
-
   const notify = useNotify();
   const axiosProtected = useAxiosProtected();
 
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axiosProtected.get(
-          `/protected/retrieve/blogs/${username}`,
-          { withCredentials: true }
-        );
-        setBlogs(response?.data);
-        if (!response?.data?.length) setError("No Blogs are Available");
-      } catch (err) {
-        setError(err?.response?.data ? err.response.data.message : err.message);
-        navigate(-1, { replace: true });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchBlogs();
-  }, [axiosProtected, navigate, username]);
+  // Fetch function moved outside of component
+  const fetchBlogs = async (blogAuthor) => {
+    console.log("[Dashboard] Fetching Blogs...");
+    const { data } = await axiosProtected.get(
+      `/protected/retrieve/blogs/${blogAuthor}`,
+      { withCredentials: true }
+    );
+    if(!data) notify("error", "No Blogs are Available");
+    return data;
+  };
 
-  useEffect(() => {
-    if (error) {
-      notify("error", error);
-      setError("");
-    }
-  }, [error, notify]);
+  // React Query for fetching blogs
+  const { data: blogs, isLoading } = useQuery({
+    queryKey: ["blogs", username], // unique query key based on the username
+    queryFn: () => fetchBlogs(username),
+    enabled: Boolean(username), // nullish coalescing 
+    staleTime: 1000 * 60 * 60,
+    onError: (err) => {
+      notify("error", err?.response?.data?.message || err.message);
+      navigate(-1, { replace: true });
+    },
+  });
+
+  if (isLoading) return <Loading />;
+  if (!blogs) {
+    return (
+      <div className="page">
+        <div className="container">
+          <h1>No Blogs are Available</h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <div className="page dashboard">
-          <div className="container">
-            <div className="blogs">
-              {blogs.length ? (
-                <BlogList blogs={blogs} />
-              ) : (
-                <h1>No Blogs are Available</h1>
-              )}
-            </div>
-          </div>
+    <div className="page dashboard">
+      <div className="container">
+        <div className="blogs">
+          <BlogList blogs={blogs} />
         </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 };
 
