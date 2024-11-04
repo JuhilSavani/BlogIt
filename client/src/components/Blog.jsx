@@ -21,6 +21,7 @@ const Blog = () => {
   const queryClient = useQueryClient();
 
   const fetchBlogById = async (blogId) => {
+    console.log("[Blog] Fetching Blog by ID...");
     const { data } = await axiosProtected.get(
       `/protected/retrieve/blog/${blogId}`,
       { withCredentials: true }
@@ -41,7 +42,7 @@ const Blog = () => {
     enabled: Boolean(id),
     staleTime: 1000 * 60 * 60,
     onError: (err) => {
-      notify("error", err.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     },
   });

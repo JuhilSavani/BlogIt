@@ -14,6 +14,7 @@ const Dashboard = () => {
 
   // Fetch function moved outside of component
   const fetchBlogs = async (blogAuthor) => {
+    console.log("[Dashboard] Fetching Blogs...");
     const { data } = await axiosProtected.get(
       `/protected/retrieve/blogs/${blogAuthor}`,
       { withCredentials: true }
@@ -29,7 +30,7 @@ const Dashboard = () => {
     enabled: Boolean(username), // nullish coalescing 
     staleTime: 1000 * 60 * 60,
     onError: (err) => {
-      notify("error", err.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     },
   });

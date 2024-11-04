@@ -20,6 +20,7 @@ const EditBlog = () => {
   const queryClient = useQueryClient();
 
   const fetchBlogById = async (blogId) => {
+    console.log("[EditBlog] Fetching Blog by ID...");
     const { data } = await axiosProtected.get(
       `/protected/retrieve/blog/${blogId}`,
       { withCredentials: true }
@@ -40,7 +41,7 @@ const EditBlog = () => {
     enabled: Boolean(id),
     staleTime: 1000 * 60 * 60,
     onError: (err) => {
-      notify("error", err.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     },
   });
@@ -51,10 +52,10 @@ const EditBlog = () => {
     onSuccess: () => {
       notify("success", "Blog updated successfully! 🎉");
       queryClient.invalidateQueries(["blogs"]);
-      navigate(`/dashboard/${blog.author}`, { replace: true });
+      navigate(`/blog/${id}`, { replace: true });
     },
     onError: (err) => {
-      notify("error", err.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     },
   });
