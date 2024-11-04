@@ -28,7 +28,8 @@ const Dashboard = () => {
     queryKey: ["blogs", username], // unique query key based on the username
     queryFn: () => fetchBlogs(username),
     enabled: Boolean(username), // nullish coalescing 
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 60,
     onError: (err) => {
       notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });

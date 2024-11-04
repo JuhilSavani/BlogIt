@@ -40,7 +40,8 @@ const Blog = () => {
     queryFn: () => fetchBlogById(id),
     queryKey: ["blog", id],
     enabled: Boolean(id),
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 60,
     onError: (err) => {
       notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
@@ -89,6 +90,9 @@ const Blog = () => {
             </button>
             <button className="delete-btn" onClick={handleDelete}>
               <i className="bx bxs-trash"></i>
+            </button>
+            <button className="dashboard-btn" onClick={() => navigate(`/dashboard/${blog?.author}`)}>
+              <i className='bx bxs-dashboard'></i>
             </button>
           </div>
         )}

@@ -39,7 +39,8 @@ const EditBlog = () => {
     queryFn: () => fetchBlogById(id),
     queryKey: ["blog", id],
     enabled: Boolean(id),
-    staleTime: 1000 * 60 * 60,
+    staleTime: 1000 * 60 * 30,
+    cacheTime: 1000 * 60 * 60,
     onError: (err) => {
       notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
