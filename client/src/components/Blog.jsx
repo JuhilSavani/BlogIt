@@ -3,64 +3,24 @@ import { useNavigate, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import useAuth from "../utils/hooks/useAuth";
 import useDate from "../utils/hooks/useDate";
-import useAxiosProtected from "../utils/hooks/useAxiosProtected";
 import useNotify from "../utils/hooks/useNotify";
 import Loading from "../components/Loading";
 import NotFound from "../pages/NotFound";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useFetchBlogById from "../utils/hooks/controllers/useFetchBlogById";
+import useDeleteBlog from "../utils/hooks/controllers/useDeleteBlog";
 
 const Blog = () => {
+  const { id } = useParams();
+  const { auth } = useAuth();
   const notify = useNotify();
   const date = useDate();
-  const { auth } = useAuth();
-  const axiosProtected = useAxiosProtected();
-
   const navigate = useNavigate();
-  const { id } = useParams();
-
-  const queryClient = useQueryClient();
-
-  const fetchBlogById = async (blogId) => {
-    console.log("[Blog] Fetching Blog by ID...");
-    const { data } = await axiosProtected.get(
-      `/protected/retrieve/blog/${blogId}`,
-      { withCredentials: true }
-    );
-    return data;
-  };
-
-  const deleteBlogbyId = async (blogId) => {
-    return await axiosProtected.delete(`/protected/delete/blog/${blogId}`, {
-      withCredentials: true,
-    });
-  };
-
+  
   // Fetching blog data
-  const { data: blog, isLoading } = useQuery({
-    queryFn: () => fetchBlogById(id),
-    queryKey: ["blog", id],
-    enabled: Boolean(id),
-    staleTime: 1000 * 60 * 30,
-    cacheTime: 1000 * 60 * 60,
-    onError: (err) => {
-      notify("error", err?.response?.data?.message || err.message);
-      navigate(-1, { replace: true });
-    },
-  });
+  const { data: blog, isLoading } = useFetchBlogById();
 
   // Mutation for deleting a blog
-  const { mutate: deleteMutate } = useMutation({
-    mutationFn: deleteBlogbyId,
-    onSuccess: () => {
-      notify("success", "Blog removed successfully!");
-      queryClient.invalidateQueries(["blogs"]);
-      navigate(`/dashboard/${blog?.author}`, { replace: true });
-    },
-    onError: (err) =>{
-      notify("error", err?.response?.data?.message || err.message);
-      navigate(-1, { replace: true });
-    }
-  });
+  const { mutate: deleteMutate } = useDeleteBlog();
 
   const handleDelete = () => deleteMutate(id);
   const handleEdit = () => navigate(`/edit/${id}`);

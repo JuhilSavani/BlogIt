@@ -1,65 +1,26 @@
 import React, { useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "@toast-ui/editor/dist/toastui-editor.css";
 import "@toast-ui/editor/dist/theme/toastui-editor-dark.css";
 import { Editor } from "@toast-ui/react-editor";
-import useAxiosProtected from "../utils/hooks/useAxiosProtected";
 import useNotify from "../utils/hooks/useNotify";
 import Loading from "../components/Loading";
 import NotFound from "../pages/NotFound";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import useFetchBlogById from "../utils/hooks/controllers/useFetchBlogById";
+import useEditBlog from "../utils/hooks/controllers/useEditBlog";
 
 const EditBlog = () => {
   const editorRef = useRef();
   const { id } = useParams();
-  const navigate = useNavigate();
-
   const notify = useNotify();
-  const axiosProtected = useAxiosProtected();
 
-  const queryClient = useQueryClient();
 
-  const fetchBlogById = async (blogId) => {
-    console.log("[EditBlog] Fetching Blog by ID...");
-    const { data } = await axiosProtected.get(
-      `/protected/retrieve/blog/${blogId}`,
-      { withCredentials: true }
-    );
-    return data;
-  };
-
-  const editBlogByID = async ({ blogId, editedBlog }) => {
-    return await axiosProtected.put(`/protected/edit/blog/${blogId}`, editedBlog, {
-      withCredentials: true,
-    });
-  };
 
   // Fetch blog data using react-query
-  const { data: blog, isLoading: isPageLoading } = useQuery({
-    queryFn: () => fetchBlogById(id),
-    queryKey: ["blog", id],
-    enabled: Boolean(id),
-    staleTime: 1000 * 60 * 30,
-    cacheTime: 1000 * 60 * 60,
-    onError: (err) => {
-      notify("error", err?.response?.data?.message || err.message);
-      navigate(-1, { replace: true });
-    },
-  });
+  const { data: blog, isLoading: isPageLoading } = useFetchBlogById();
 
   // Mutation for updating the blog
-  const { mutate: editMutate, isLoading } = useMutation({
-    mutationFn: editBlogByID,
-    onSuccess: () => {
-      notify("success", "Blog updated successfully! 🎉");
-      queryClient.invalidateQueries(["blogs"]);
-      navigate(`/blog/${id}`, { replace: true });
-    },
-    onError: (err) => {
-      notify("error", err?.response?.data?.message || err.message);
-      navigate(-1, { replace: true });
-    },
-  });
+  const { mutate: editMutate, isLoading } = useEditBlog();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
