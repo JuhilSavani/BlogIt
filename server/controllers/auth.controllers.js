@@ -94,9 +94,7 @@ export const register = async (req, res) => {
 };
 
 export const logout = (req, res) => {
-  console.log("Logout initiated.");
   if (!req.cookies?.["x-blogit-token"]) {
-    console.log("No cookie found, user is already logged out.");
     return res.sendStatus(204); // No Content
   }
   res.clearCookie("x-blogit-token", {
@@ -104,7 +102,6 @@ export const logout = (req, res) => {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
   });
-  console.log("Cookie cleared, user logged out successfully.");
   return res.status(200).json({ message: "Logged out successfully" });
 };
 
