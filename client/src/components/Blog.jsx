@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ReactMarkdown from "react-markdown";
 import useAuth from "../utils/hooks/useAuth";
 import useDate from "../utils/hooks/useDate";
@@ -7,100 +7,92 @@ import useAxiosProtected from "../utils/hooks/useAxiosProtected";
 import useNotify from "../utils/hooks/useNotify";
 import Loading from "../components/Loading";
 import NotFound from "../pages/NotFound";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Blog = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [blog, setBlog] = useState([]);
-  const [error, setError] = useState({});
-
   const notify = useNotify();
   const date = useDate();
   const { auth } = useAuth();
   const axiosProtected = useAxiosProtected();
 
-  const location = useLocation();
   const navigate = useNavigate();
   const { id } = useParams();
 
-  useEffect(() => {
-    const fetchBlog = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axiosProtected.get(
-          `/protected/retrieve/blog/${id}`,
-          { withCredentials: true }
-        );
-        setBlog(response.data);
-        if (!response.data) setError("Blog ID is not valid");
-      } catch (err) {
-        setError(err?.response?.data ? err.response.data.message : err.message);
-        navigate(-1, { replace: true });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchBlog();
-  }, [axiosProtected, id, navigate]);
+  const queryClient = useQueryClient();
 
-  const handleDelete = async () => {
-    try {
-      await axiosProtected.delete(`/protected/delete/blog/${id}`, {
-        withCredentials: true,
-      });
+  const fetchBlogById = async (blogId) => {
+    const { data } = await axiosProtected.get(
+      `/protected/retrieve/blog/${blogId}`,
+      { withCredentials: true }
+    );
+    return data;
+  };
+
+  const deleteBlogbyId = async (blogId) => {
+    return await axiosProtected.delete(`/protected/delete/blog/${blogId}`, {
+      withCredentials: true,
+    });
+  };
+
+  // Fetching blog data
+  const { data: blog, isLoading } = useQuery({
+    queryFn: () => fetchBlogById(id),
+    queryKey: ["blog", id],
+    enabled: Boolean(id),
+    staleTime: 1000 * 60 * 60,
+    onError: (err) => {
+      notify("error", err.response?.data?.message || err.message);
+      navigate(-1, { replace: true });
+    },
+  });
+
+  // Mutation for deleting a blog
+  const { mutate: deleteMutate } = useMutation({
+    mutationFn: deleteBlogbyId,
+    onSuccess: () => {
       notify("success", "Blog removed successfully!");
-      navigate(`/dashboard/${blog.author}`, { replace: true });
-    } catch (err) {
-      setError(err?.response?.data ? err.response.data.message : err.message);
+      queryClient.invalidateQueries(["blogs"]);
+      navigate(`/dashboard/${blog?.author}`, { replace: true });
+    },
+    onError: (err) =>{
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     }
-  };
+  });
 
-  const handleEdit = () => {
-    const blogId = location.pathname.split("/")[2];
-    navigate(`/edit/${blogId}`);
-  };
-
-  useEffect(() => {
-    if (error) {
-      notify("error", error);
-      setError("");
-    }
-  }, [error, notify]);
+  const handleDelete = () => deleteMutate(id);
+  const handleEdit = () => navigate(`/edit/${id}`);
+  
+  if (isLoading) return <Loading />;
+  if (!blog){ 
+    notify("error", "Blog ID is not valid");
+    return <NotFound />;
+  }
 
   return (
-    <>
-      {isLoading ? (
-        <Loading />
-      ) : blog ? (
-        <div className="page blog-page">
-          <div className="container">
-            <h1 className="title">{blog.title}</h1>
-            <div className="content">
-              <ReactMarkdown>{blog.content}</ReactMarkdown>
-            </div>
-            <div className="meta-data">
-              <span className="date">By: {blog.author}</span>
-              <span className="date">On: {date(blog.createdAt)}</span>
-              <span className="tag">Tag: {blog.tag}</span>
-            </div>
-            {auth.username === blog.author ? (
-              <div className="options">
-                <button className="edit-btn" onClick={handleEdit}>
-                  <i className="bx bxs-edit-alt"></i>
-                </button>
-                <button className="delete-btn" onClick={handleDelete}>
-                  <i className="bx bxs-trash"></i>
-                </button>
-              </div>
-            ) : (
-              <></>
-            )}
-          </div>
+    <div className="page blog-page">
+      <div className="container">
+        <h1 className="title">{blog?.title}</h1>
+        <div className="content">
+          <ReactMarkdown>{blog?.content}</ReactMarkdown>
         </div>
-      ) : (
-        <NotFound />
-      )}
-    </>
+        <div className="meta-data">
+          <span className="date">By: {blog?.author}</span>
+          <span className="date">On: {date(blog?.createdAt)}</span>
+          <span className="tag">Tag: {blog?.tag}</span>
+        </div>
+        {auth?.username === blog?.author && (
+          <div className="options">
+            <button className="edit-btn" onClick={handleEdit}>
+              <i className="bx bxs-edit-alt"></i>
+            </button>
+            <button className="delete-btn" onClick={handleDelete}>
+              <i className="bx bxs-trash"></i>
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

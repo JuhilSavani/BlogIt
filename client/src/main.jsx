@@ -4,13 +4,18 @@ import App from "./App.jsx";
 import "./main.scss";
 import { AuthProvider } from "./utils/contexts/AuthProvider.jsx";
 import { ThemeProvider } from "./utils/contexts/ThemeProvider.jsx";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
-    <ThemeProvider>
+  <ThemeProvider>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <App />
       </AuthProvider>
-    </ThemeProvider>
+    </QueryClientProvider>
+  </ThemeProvider>
   // </StrictMode>
 );
