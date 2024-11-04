@@ -39,7 +39,7 @@ const Register = () => {
       notify("success", "Your account has been created.");
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err?.response?.data ? err.response.data.message : err.message);
+      setError(err?.response?.data ? err?.response.data.message : err.message);
     } finally {
       setIsLoading(false);
     }

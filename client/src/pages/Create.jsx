@@ -32,7 +32,7 @@ const Create = () => {
       queryClient.invalidateQueries(["blogs"]);
     },
     onError: (err) => {
-      notify("error", err.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
       navigate(-1, { replace: true });
     },
   });
