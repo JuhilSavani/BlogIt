@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 export const retreiveMany = async (req, res) => {
   try {
     const { username } = req.params; 
-    const blogs = await Blog.find({ author: username });
+    const blogs = await Blog.find({ author: username }).sort({ createdAt: -1 });;
     if (!blogs.length) return res.sendStatus(204);
     return res.status(200).json(blogs);
   } catch (error) {
