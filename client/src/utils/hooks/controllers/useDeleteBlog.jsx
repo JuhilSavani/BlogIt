@@ -22,7 +22,7 @@ const useDeleteBlog = () => {
     onSuccess: () => {
       notify("success", "Blog removed successfully!");
       queryClient.invalidateQueries(["blogs"]);
-      navigate(`/dashboard/${auth?.author}`, { replace: true });
+      navigate(`/dashboard/${auth?.username}`, { replace: true });
     },
     onError: (err) =>{
       notify("error", err?.response?.data?.message || err.message);
