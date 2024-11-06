@@ -4,9 +4,9 @@ import BlogList from "../components/BlogList";
 import useFetchBlogs from "../utils/hooks/controllers/useFetchBlogs";
 
 const Dashboard = () => {
-  const { data: blogs, isLoading } = useFetchBlogs();
+  const { data: blogs, isLoading, isFetching } = useFetchBlogs();
 
-  if (isLoading) return <Loading />;
+  if (isLoading || isFetching) return <Loading />;
   if (!blogs) {
     return (
       <div className="page">
