@@ -23,7 +23,7 @@ const Slider = () => {
       notify("success", "Logged out! See you next time!");
       navigate("/", { replace: true });
     } catch (err) {
-      setError(err?.response?.data ? err?.response.data.message : err.message);
+      setError(err?.response?.data?.message || err.message);
     }
   };
 

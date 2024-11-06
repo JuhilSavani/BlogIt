@@ -41,7 +41,7 @@ const Login = () => {
       notify("success", "Great to see you again!");
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err?.response?.data ? err?.response.data.message : err.message);
+      setError(err?.response?.data?.message || err.message);
     } finally {
       setIsLoading(false);
     }
