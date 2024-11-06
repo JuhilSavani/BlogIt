@@ -9,7 +9,7 @@ const Create = () => {
   const editorRef = useRef();
   const notify = useNotify();
 
-  const { mutate: publishMutate, isLoading } = usePublishBlog();
+  const { mutate: publishMutate, isLoading, isFetching } = usePublishBlog();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -72,7 +72,7 @@ const Create = () => {
               <option value="Political">Political</option>
             </datalist>
             <button type="submit" className="post-btn">
-              {isLoading ? "Loading" : "Publish"}
+              {isLoading || isFetching ? "Loading" : "Publish"}
             </button>
           </div>
         </form>

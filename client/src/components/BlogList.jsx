@@ -1,8 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import useDate from "../utils/hooks/useDate";
-import ReactMarkdown from 'react-markdown';
-import PropTypes from 'prop-types';
+import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
+import PropTypes from "prop-types";
 
 const BlogList = ({ blogs }) => {
   const date = useDate();
@@ -13,7 +14,11 @@ const BlogList = ({ blogs }) => {
         <div className="blog" key={b._id}>
           <Link to={`/blog/${b._id}`}>
             <h1 className="title">{b.title}</h1>
-            <div className="content"><ReactMarkdown>{b.content}</ReactMarkdown></div>
+            <div className="content">
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>
+                {b?.content.replace(/\n/gi, "&nbsp; \n")}
+              </ReactMarkdown>
+            </div>
             <div className="meta-data">
               <span className="author">By: {b.author}</span>
               <span className="date">On: {date(b.createdAt)}</span>

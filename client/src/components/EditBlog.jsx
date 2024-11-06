@@ -17,15 +17,19 @@ const EditBlog = () => {
 
 
   // Fetch blog data using react-query
-  const { data: blog, isLoading: isPageLoading } = useFetchBlogById();
+  const { data: blog, isLoading: isBlogLoading, isFetching: isBlogFetching } = useFetchBlogById();
 
   // Mutation for updating the blog
-  const { mutate: editMutate, isLoading } = useEditBlog();
+  const { mutate: editMutate, isLoading, isFetching } = useEditBlog();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const editorContent = editorRef.current.getInstance().getMarkdown();
+    if (!editorContent.trim()) {
+      notify("error", "Blog content cannot be empty!");
+      return;
+    }
     const blog = {
       title: formData.get("edited-title"),
       content: editorContent,
@@ -34,7 +38,7 @@ const EditBlog = () => {
     editMutate({ blogId: id, editedBlog: blog });
   };
 
-  if (isPageLoading) return <Loading />;
+  if (isBlogLoading || isBlogFetching) return <Loading />;
   if (!blog){
     notify("error", "Blog ID is not valid");
     return <NotFound />;
@@ -61,7 +65,7 @@ const EditBlog = () => {
               previewStyle="vertical"
               height="500px"
               initialEditType="markdown"
-              initialValue={blog.content || "hello, world"}
+              initialValue={blog?.content || "hello, world"}
               ref={editorRef}
             />
           </div>
@@ -91,7 +95,7 @@ const EditBlog = () => {
               <option value="Political">Political</option>
             </datalist>
             <button type="submit" className="post-btn">
-              {isLoading ? "Loading" : "Update"}
+              {isLoading || isFetching ? "Loading" : "Update"}
             </button>
           </div>
         </form>
