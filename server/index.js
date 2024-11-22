@@ -3,7 +3,8 @@ import cors from "cors";
 import passport from "passport";
 import cookieParser from "cookie-parser";
 import { connectMongo } from "./config/db.config.js";
-import authRoutes from "./routes/auth.routes.js";
+import verificationRoutes from "./routes/verification.routes.js"
+import authorizationRoutes from "./routes/authorization.routes.js";
 import protectedRoutes from "./routes/protected.routes.js";
 import "./config/passport.config.js";
 
@@ -41,8 +42,9 @@ app.post("/health-check", (req, res) => {
 });
 
 // Routes
-app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/authorize", authorizationRoutes);
 app.use("/api/v1/protected", protectedRoutes);
+app.use("/api/v1/verify", verificationRoutes);
 
 app.listen(PORT, () => {
   process.stdout.write(`Server is running at http://localhost:${PORT}\n`);

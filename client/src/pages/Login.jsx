@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../utils/hooks/useAuth";
 import axios from "../utils/apis/axios";
@@ -9,7 +9,6 @@ import useValidator from "../utils/hooks/useValidator";
 const Login = () => {
   const { setAuth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({});
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -27,13 +26,13 @@ const Login = () => {
       type: "login"
     });
     if (validationError) {
-      setError(validationError);
+      notify("error", validationError);
       setIsLoading(false);
       return; 
     }
 
     try {
-      const response = await axios.post("/auth/login", data, {
+      const response = await axios.post("/authorize/login", data, {
         withCredentials: true, // Allows the server to set httpOnly cookie
       });
       setAuth(response.data);
@@ -41,18 +40,11 @@ const Login = () => {
       notify("success", "Great to see you again!");
       navigate(from, { replace: true });
     } catch (err) {
-      setError(err?.response?.data?.message || err.message);
+      notify("error", err?.response?.data?.message || err.message);
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(()=>{
-    if(error){
-      notify("error", error);
-      setError("");
-    }
-  }, [error, notify]);
 
   return (
     <div className="page sign-in">

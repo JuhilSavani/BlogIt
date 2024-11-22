@@ -22,15 +22,18 @@ import EditBlog from "./components/EditBlog";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Slider from "./components/Slider";
+import EmailVerify from "./pages/EmailVerify";
 
 // Define a layout component
 const Layout = () => {
   const location = useLocation();
+  
   const navbarRoutes = ["/", "/about", "/sign-in", "/sign-up", "/create"];
   const isDashboardRoute = matchPath("/dashboard/:username", location.pathname);
+  const isVerifyRoute = matchPath("/verify/:email", location.pathname);
 
-  const showNavbar =
-    navbarRoutes.includes(location.pathname) || isDashboardRoute;
+  const showNavbar = navbarRoutes.includes(location.pathname) || isDashboardRoute || isVerifyRoute;
+  
   return (
     <>
       {showNavbar && <Navbar />}
@@ -57,12 +60,14 @@ const Layout = () => {
 // Define the routes
 const routes = createRoutesFromElements(
   <Route path="/" element={<Layout />}>
+    <Route path="sign-in" element={<Login />} />
+    <Route path="sign-up" element={<Register />} />
+    <Route path="verify/:email" element={<EmailVerify />} />
+
     <Route element={<ProtectedLoader />}>
       {/* Public */}
       <Route index element={<Home />} />
       <Route path="about" element={<About />} />
-      <Route path="sign-in" element={<Login />} />
-      <Route path="sign-up" element={<Register />} />
 
       {/* Protected */}
       <Route element={<ProtectedRoute />}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../utils/hooks/useAuth";
 import axios from "../utils/apis/axios";
@@ -8,49 +8,58 @@ import useNotify from "../utils/hooks/useNotify";
 const Register = () => {
   const { setAuth } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState({});
 
-  const navigate = useNavigate();
   const location = useLocation();
+  const navigate = useNavigate();
   const from = location?.state?.from?.pathname || "/";
 
   const notify = useNotify();
   const validate = useValidator();
 
+  // For development environment
+  const registerUser = async (data) => {
+    return await axios.post("/authorize/register", data, {
+      withCredentials: true,
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
+    const userData = Object.fromEntries(formData.entries());
+
     // Validate the data
-    const validationError = validate(data, {
+    const validationError = validate(userData, {
       type: "register"
     });
     if (validationError) {
-      setError(validationError);
+      notify("error", validationError);
       setIsLoading(false);
       return; 
     }
+
     try {
-      const response = await axios.post("/auth/register", data, {
-        withCredentials: true
-      });
-      setAuth(response.data);
-      notify("success", "Your account has been created.");
-      navigate(from, { replace: true });
+      if(import.meta.env.VITE_NODE_ENV === "production"){
+        await axios.post('/verify/account', { email: userData.email, username: userData.username });
+        const response =  await axios.get(`/verify/${userData.email}`);
+        setAuth({ userData, verificationCode: response.data?.verificationCode, from });
+        notify("success", "Verification code sent to your email.");
+        navigate(`/verify/${userData.email}`);
+      }else{
+        await axios.post('/verify/account', { email: userData.email, username: userData.username });
+        const response = await registerUser(userData);
+        setAuth(response.data);
+        notify("success", "Registration successful!");
+        navigate(from, { replace: true });
+      }
     } catch (err) {
-      setError(err?.response?.data?.message || err.message);
+      console.log("[CLIENT - Register] Error: ", err.stack);
+      notify("error", err?.response?.data?.message || err.message);
     } finally {
       setIsLoading(false);
     }
   };
-
-  useEffect(()=>{
-    if(error){
-      notify("error", error);
-      setError("");
-    }
-  }, [error, notify]);
 
   return (
     <div className="page sign-up">
