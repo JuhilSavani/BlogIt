@@ -23,8 +23,8 @@ BlogIt is a web application that allows users to create, read, and manage blog p
 
 ## Technologies
 
-- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js 
-- **Backend:** Node.js, Express, Passport.js (JWT-based authentication)
+- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js, react-query
+- **Backend:** Node.js, Express, Passport.js, jsonwebtoken, bcrypt
 - **Database:** MongoDB (using Mongoose)
 - **Styling:** SCSS (custom styles and transitions)
 - **Development Tools:** VS Code, Postman (for API testing)
@@ -45,14 +45,13 @@ To set up BlogIt locally, follow these steps:
     npm install --force
     ```
 
-3.  Set up the environment variables. Create a `.env` file in the server directory with the following variables:
-    ```txt
-    PORT=4000
-    DB_URI=your_mongodb_uri
-    ACCESS_TOKEN_SECRET=your_access_token_secret
-    REFRESH_TOKEN_SECRET=your_refresh_token_secret
-    ```
-
+3.  Set up the environment variables. Create a **.env** file in the server directory with the following variables:
+    - Copy the **.env.example** file to **.env** in the server directory:
+        ```bash
+        cp .env.example .env
+        ```
+    - Update the values in the **.env** file as needed (e.g., `DB_URI`, `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET`).
+<br/>
 
 4.  Install dependencies for the frontend:
     ```bash
@@ -83,12 +82,19 @@ To set up BlogIt locally, follow these steps:
 
 ## API Endpoints
 
-1. **Authentication** `/auth`
+1. **Authentication** `/authorize`
     - POST `/register` - Register a new user
     - POST `/login` - Log in a user
+    - POST `/logout` - Log out a user
+    - GET `/refresh` - Refresh the authentication token
 <br/>
 
-2. **Blog Posts** `/protected`
+2. **Verification** `/verify`
+    - GET `/:email` - Verify if the email is legit 
+    - POST `/account` - Check if the username or email already exists
+<br/>
+
+3. **Blog Posts** `/protected`
 
     - GET `/retreive/blogs` - Retrieve all blog posts (protected)
     - GET `/retreive/blog/:id` - Retrieve single blog post (protected)
