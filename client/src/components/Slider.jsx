@@ -34,7 +34,8 @@ const Slider = () => {
     }
   }, [error, notify]);
 
-  if (!auth) return null;
+
+  if (!auth?.accessToken) return null;
 
   return (
     <div className={`slider ${isOpen ? "open" : ""}`} onClick={toggleSlider}>
