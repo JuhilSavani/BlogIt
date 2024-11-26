@@ -7,14 +7,12 @@ const router = express.Router();
 // Retrieve Blogs
 router.get(
   "/retrieve/blogs/:username",
-  passport.authenticate("jwt", { session: false }),
   retreiveMany
 );
 
 // Retrieve Blog
 router.get(
   "/retrieve/blog/:id",
-  passport.authenticate("jwt", { session: false }),
   retreiveOne
 );
 
