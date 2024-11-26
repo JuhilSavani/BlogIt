@@ -14,19 +14,19 @@ const jwtOptions = {
   secretOrKey: process.env.ACCESS_TOKEN_SECRET,
 };
 
-passport.use(
-  new JwtStrategy(jwtOptions, async (jwtPayload, callback) => {
-    try {
-      const user = await User.findById(jwtPayload.sub).select("_id username");
-      if (user) {
-        callback(null, user);
-      } else {
-        callback(null, false);
+export const configurePassport = () => {
+  passport.use(
+    new JwtStrategy(jwtOptions, async (jwtPayload, callback) => {
+      try {
+        const user = await User.findById(jwtPayload.sub).select("_id username");
+        if (user) {
+          callback(null, user);
+        } else {
+          callback(null, false);
+        }
+      } catch (error) {
+        callback(error, false);
       }
-    } catch (error) {
-      callback(error, false);
-    }
-  })
-);
-
-export default passport;
+    })
+  );
+};

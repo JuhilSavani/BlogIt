@@ -5,8 +5,8 @@ import cookieParser from "cookie-parser";
 import { connectMongo } from "./config/db.config.js";
 import verificationRoutes from "./routes/verification.routes.js"
 import authorizationRoutes from "./routes/authorization.routes.js";
-import protectedRoutes from "./routes/protected.routes.js";
-import "./config/passport.config.js";
+import blogRoutes from "./routes/blog.routes.js";
+import { configurePassport } from "./config/passport.config.js";
 
 // Set up the server
 const PORT = process.env.PORT || 4000;
@@ -14,6 +14,9 @@ const app = express();
 
 // Connect to MongoDB
 connectMongo();
+
+// Configure Passport
+configurePassport();
 
 // Middlewares
 app.use(
@@ -30,7 +33,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-app.use(passport.initialize());
+app.use(passport.initialize()); // Initialize Passport
 
 // Tests
 app.get("/health-check", (req, res) => {
@@ -43,7 +46,7 @@ app.post("/health-check", (req, res) => {
 
 // Routes
 app.use("/api/v1/authorize", authorizationRoutes);
-app.use("/api/v1/protected", protectedRoutes);
+app.use("/api/v1/protected", blogRoutes);
 app.use("/api/v1/verify", verificationRoutes);
 
 app.listen(PORT, () => {
