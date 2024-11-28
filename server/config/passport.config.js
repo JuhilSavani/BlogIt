@@ -1,10 +1,10 @@
-import { configDotenv } from "dotenv";
+import dotenv from "dotenv";
 import passport from "passport";
 import passportJWT from "passport-jwt";
 import { User } from "../models/user.model.js";
 
 // Load environmental variables
-configDotenv();
+dotenv.config();
 
 const JwtStrategy = passportJWT.Strategy;
 const ExtractJwt = passportJWT.ExtractJwt;
