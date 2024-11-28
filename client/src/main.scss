@@ -501,10 +501,13 @@ header.scrolled {
   padding: 5rem 12vw;
   padding-top: 0;
   .options{
-    margin-top: 0.75rem; 
+    border-top: 1px solid var(--theme-fg);
+    border-bottom: 1px solid var(--theme-fg);
+    margin-top: 1rem; 
+    padding: 1rem 0;
     display: flex;
     gap: 1rem;
-    border-radius: 6px;
+    // border-radius: 6px;
   }
   .options button{
     font-size: var(--font-lg);
@@ -517,12 +520,12 @@ header.scrolled {
     border: none;
     border-radius: 6px;
     transition: 0.25s ease;
-    box-shadow: 0px 0px 0px 1px rgba(16, 16, 16, 0.25);
+    box-shadow: 0px 0px 0px 3px rgba(16, 16, 16, 0.25);
   }
   .options button:hover{
     transform: scale(1.01);
     box-shadow: none;
-    box-shadow: 0px 0px 0px 3px rgba(16, 16, 16, 0.25);
+    box-shadow: 0px 0px 0px 6px rgba(16, 16, 16, 0.25);
   }
   .edit-btn:hover, .dashboard-btn:hover{
     color: var(--primary-blue);

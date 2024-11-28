@@ -61,7 +61,8 @@ const Blog = () => {
             className="dashboard-btn"
             onClick={() => navigate(`/dashboard/${blog?.author}`)}
           >
-            <i className="bx bxs-dashboard"></i>
+            Back to dashboard
+            {/* <i className="bx bxs-dashboard"></i> */}
           </button>
         </div>
       </div>
