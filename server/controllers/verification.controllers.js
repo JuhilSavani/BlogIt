@@ -43,13 +43,44 @@ export const verifyEmail = async (req, res) => {
       to: email,
       subject: "Verify Your Email Address With BlogIt",
       html: `
-        <h1>Email Verification</h1>
-        <p>Your verification code is:</p>
-        <h2 style="color: #2d89ef;">${verificationCode}</h2>
-        <p>Please enter this code on the verification page to complete your registration.</p>
-        <p>If you did not sign up for BlogIt, please ignore this email.</p>
-        <p>Thank you,</p>
-        <p>The BlogIt Team</p>
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          h1 {
+            color: #333;
+            font-size: 26px;
+            margin-bottom: 20px;
+          }
+          p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin: 10px 0;
+            color: #333;
+          }
+          .verification-code {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            background-color: #333;
+            color: #FFD369;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>Email Verification</h1>
+          <p>Your verification code is: <span class="verification-code">${verificationCode}</span></p>
+          <p>Please enter this code on the verification page to complete your registration.</p>
+          <p>If you did not sign up for BlogIt, please ignore this email.</p>
+          <p>Thank you</p>
+          <p>The BlogIt Team</p>
+        </div>
+      </body>
+      </html>
       `,
     };
 
