@@ -23,8 +23,8 @@ BlogIt is a web application that allows users to create, read, and manage blog p
 
 ## Technologies
 
-- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js, react-query
-- **Backend:** Node.js, Express, Passport.js, jsonwebtoken, bcrypt
+- **Frontend:** React, Toast-UI Editor, Toastify.js, Validator.js, React Query, Nodemailer, Googleapis 
+- **Backend:** Node.js, Express, Passport.js, JsonWebToken, Bcrypt.js
 - **Database:** MongoDB (using Mongoose)
 - **Styling:** SCSS (custom styles and transitions)
 - **Development Tools:** VS Code, Postman (for API testing)
@@ -51,7 +51,6 @@ To set up BlogIt locally, follow these steps:
         cp .env.example .env
         ```
     - Update the values in the **.env** file as needed (e.g., `DB_URI`, `ACCESS_TOKEN_SECRET`, `REFRESH_TOKEN_SECRET`).
-<br/>
 
 4.  Install dependencies for the frontend:
     ```bash
@@ -83,18 +82,18 @@ To set up BlogIt locally, follow these steps:
 ## API Endpoints
 
 1. **Authentication** `/authorize`
+   
     - POST `/register` - Register a new user
     - POST `/login` - Log in a user
     - POST `/logout` - Log out a user
-    - GET `/refresh` - Refresh the authentication token
-<br/>
+    - GET `/refresh` - Refresh the authentication token <br/>
 
-2. **Verification** `/verify`
+3. **Verification** `/verify`
+   
     - GET `/:email` - Verify if the email is legit 
-    - POST `/account` - Check if the username or email already exists
-<br/>
+    - POST `/account` - Check if the username or email already exists <br/>
 
-3. **Blog Posts** `/protected`
+4. **Blog Posts** `/protected`
 
     - GET `/retreive/blogs` - Retrieve all blog posts (protected)
     - GET `/retreive/blog/:id` - Retrieve single blog post (protected)
