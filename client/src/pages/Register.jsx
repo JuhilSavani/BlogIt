@@ -42,8 +42,8 @@ const Register = () => {
     try {
       if(import.meta.env.VITE_NODE_ENV === "production"){
         await axios.post('/verify/account', { email: userData.email, username: userData.username });
-        const response =  await axios.get(`/verify/${userData.email}`);
-        setAuth({ userData, verificationCode: response.data?.verificationCode, from });
+        const { data } =  await axios.get(`/verify/${userData.email}`);
+        setAuth({ userData, from ,verificationCode: data?.verificationCode });
         notify("success", "Verification code sent to your email.");
         navigate(`/verify/${userData.email}`);
       }else{

@@ -54,11 +54,11 @@ const EmailVerify = () => {
     event.preventDefault();
     setIsSending(true);
     try {
-      const { data } =  await axios.post(`/verify/${email}`);
-      setAuth((prevAuth) => ({ ...prevAuth, verificationCode: data.verificationCode }));
+      const { data } =  await axios.get(`/verify/${email}`);
+      setAuth((prev) => ({ ...prev, verificationCode: data?.verificationCode }));
       notify("success", "Verification code sent to your email.");
     } catch (error) {
-      console.error('Error:', error.response ? error.response.data : error.message);
+      console.error('Error:', error?.response?.data || error.message);
     } finally {
       setIsSending(false);
     }
