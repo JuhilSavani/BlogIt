@@ -16,13 +16,6 @@ const Register = () => {
   const notify = useNotify();
   const validate = useValidator();
 
-  // For development environment
-  const registerUser = async (data) => {
-    return await axios.post("/authorize/register", data, {
-      withCredentials: true,
-    });
-  };
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -48,7 +41,9 @@ const Register = () => {
         navigate(`/verify/${userData.email}`);
       }else{
         await axios.post('/verify/account', { email: userData.email, username: userData.username });
-        const response = await registerUser(userData);
+        const response = await axios.post("/authorize/register", userData, {
+          withCredentials: true,
+        });
         setAuth(response.data);
         notify("success", "Registration successful!");
         navigate(from, { replace: true });
