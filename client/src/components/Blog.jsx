@@ -46,6 +46,7 @@ const Blog = () => {
           <span className="date">On: {date(blog?.createdAt)}</span>
           <span className="tag">Tag: {blog?.tag}</span>
         </div>
+
         <div className="options">
           {auth?.username === blog?.author && (
             <>
@@ -57,13 +58,22 @@ const Blog = () => {
               </button>
             </>
           )}
-          <button
-            className="dashboard-btn"
-            onClick={() => navigate(`/dashboard/${blog?.author}`)}
-          >
-            Back to dashboard
-            {/* <i className="bx bxs-dashboard"></i> */}
-          </button>
+          {auth?.accessToken ? (
+            <button
+              className="dashboard-btn"
+              onClick={() => navigate(`/dashboard/${blog?.author}`)}
+            >
+              Back to dashboard
+              {/* <i className="bx bxs-dashboard"></i> */}
+            </button>
+          ) : (
+            <button
+              className="home-btn"
+              onClick={() => navigate(`/`)}
+            >
+              Back to Home
+            </button>
+          )}
         </div>
       </div>
     </div>
