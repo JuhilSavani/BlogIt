@@ -60,23 +60,22 @@ const Layout = () => {
 // Define the routes
 const routes = createRoutesFromElements(
   <Route path="/" element={<Layout />}>
-    {/* Unprotected */}
-    <Route path="sign-in" element={<Login />} />
-    <Route path="sign-up" element={<Register />} />
-    <Route path="verify/:email" element={<EmailVerify />} />
-    <Route path="dashboard/:username" element={<Dashboard />} />
-    <Route path="blog/:id" element={<Blog />} />
-
     <Route element={<ProtectedLoader />}>
-      {/* Public */}
       <Route index element={<Home />} />
       <Route path="about" element={<About />} />
+
+      <Route path="sign-in" element={<Login />} />
+      <Route path="sign-up" element={<Register />} />
+      <Route path="verify/:email" element={<EmailVerify />} />
 
       {/* Protected */}
       <Route element={<ProtectedRoute />}>
         <Route path="create" element={<Create />} />
         <Route path="edit/:id" element={<EditBlog />} />
       </Route>
+
+      <Route path="dashboard/:username" element={<Dashboard />} />
+      <Route path="blog/:id" element={<Blog />} />
 
       {/* Catch all */}
       <Route path="*" element={<NotFound />} />

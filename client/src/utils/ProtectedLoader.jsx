@@ -20,19 +20,10 @@ const ProtectedLoader = () => {
         setLoading(false);
       }
     };
-    !auth?.accessToken ? getRefresh() : setLoading(false);
-  }, [auth?.accessToken, refresh, setAuth]);
+    !auth?.accessToken && !isLoading ? getRefresh() : setLoading(false);
+  }, [auth?.accessToken, refresh, setAuth, isLoading]);
 
-  return (
-    <>
-      
-      {isLoading ? (
-        <Loading/>
-      ) : (
-        <Outlet />
-      )}
-    </>
-  );
+    return isLoading ? <Loading/> : <Outlet />;
 };
 
 export default ProtectedLoader;
