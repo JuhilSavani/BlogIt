@@ -40,6 +40,7 @@ const Login = () => {
       notify("success", "Great to see you again!");
       navigate(from, { replace: true });
     } catch (err) {
+      console.log("[CLIENT - Login] Error: ", err.stack);
       notify("error", err?.response?.data?.message || err.message);
     } finally {
       setIsLoading(false);
