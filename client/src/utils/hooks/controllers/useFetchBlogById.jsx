@@ -13,7 +13,6 @@ const useFetchBlogById = () => {
     console.log("[Blog] Fetching Blog by ID...");
     const { data } = await axiosProtected.get(
       `/protected/retrieve/blog/${blogId}`,
-      { withCredentials: true }
     );
     return data;
   };

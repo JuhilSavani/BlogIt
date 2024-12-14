@@ -14,9 +14,7 @@ const useFetchBlogs = () => {
     console.log("[Dashboard] Fetching Blogs...");
     const { data } = await axiosProtected.get(
       `/protected/retrieve/blogs/${blogAuthor}`,
-      { withCredentials: true }
     );
-    if (!data) notify("error", "No Blogs are Available");
     return data;
   };
 
