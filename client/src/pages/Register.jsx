@@ -36,15 +36,22 @@ const Register = () => {
       if(import.meta.env.VITE_NODE_ENV === "production"){
         await axios.post('/verify/account', { email: userData.email, username: userData.username });
         const { data } =  await axios.get(`/verify/${userData.email}`);
-        setAuth({ userData, from ,verificationCode: data?.verificationCode });
+        /* ISSUE: 
+        * setAuth({ userData, from, verificationCode: data?.verificationCode });
+        * Failing to setup the auth context.
+        */
         notify("success", "Verification code sent to your email.");
-        navigate(`/verify/${userData.email}`);
+        navigate(`/verify/${userData.email}`, { state: { userData, verificationCode: data?.verificationCode, from } });
       }else{
         await axios.post('/verify/account', { email: userData.email, username: userData.username });
         const response = await axios.post("/authorize/register", userData, {
           withCredentials: true,
         });
-        setAuth(response.data);
+        /* ISSUE:
+        * setAuth(response.data); 
+        * Surprisingly, This is sets up auth context successfully!
+        */
+        setAuth(response.data); 
         notify("success", "Registration successful!");
         navigate(from, { replace: true });
       }

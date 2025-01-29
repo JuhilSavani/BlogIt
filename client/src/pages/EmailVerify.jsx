@@ -1,17 +1,27 @@
+
 import React, { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import useAuth from "../utils/hooks/useAuth";
 import axios from "../utils/apis/axios";
 import useNotify from "../utils/hooks/useNotify";
 
 const EmailVerify = () => {
+  const location = useLocation();
+  /* ISSUE: 
+  * This is a temporary solution to resolve the weird issue 
+  * regarding setAuth dispatcher from useAuth, which is 
+  * failing to setup the auth context.
+  */
+  const pathState = location.state || {};
+
+  const [verificationCode, setVerificationCode] =  useState(pathState?.verificationCode);
   const [isSending, setIsSending] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { email } = useParams();
 
   const notify = useNotify();
-  const { auth, setAuth } = useAuth();
+  const { setAuth } = useAuth();
 
   const registerUser = async (data) => {
     return await axios.post("/authorize/register", data, {
@@ -19,8 +29,6 @@ const EmailVerify = () => {
     });
   };
 
-  // console.log(auth);
-  
   const handleVerify = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -33,16 +41,15 @@ const EmailVerify = () => {
         return;
       }
 
-      if(parseInt(data.verificationCode) !== parseInt(auth.verificationCode)){
+      if(parseInt(data.verificationCode) !== parseInt(verificationCode)){
         notify("error", "Invalid verification code.");
         setIsLoading(false);
         return;
       }
-      const response = await registerUser(auth.userData);
-      const from = auth.from;
+      const response = await registerUser(pathState?.userData);
       setAuth(response.data);
       notify("success", "Registration successful!");
-      navigate(from, { replace: true });
+      navigate(pathState?.from, { replace: true });
     } catch (error) {
       console.error('Error:', error.response ? error.response.data : error.message);
     } finally {
@@ -55,7 +62,7 @@ const EmailVerify = () => {
     setIsSending(true);
     try {
       const { data } =  await axios.get(`/verify/${email}`);
-      setAuth((prev) => ({ ...prev, verificationCode: data?.verificationCode }));
+      setVerificationCode(data?.verificationCode);
       notify("success", "Verification code sent to your email.");
     } catch (error) {
       console.error('Error:', error?.response?.data || error.message);
@@ -87,3 +94,4 @@ const EmailVerify = () => {
 };
 
 export default EmailVerify;
+
